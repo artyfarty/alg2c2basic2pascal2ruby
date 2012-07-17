@@ -5,7 +5,7 @@ code = <<CODE
 нач
   вещ x,y
   ввод x,y
-  если y <= x*x*x и y <= 1/x и x < 0 и y < 0 то
+  если y <= 0 и (y >= 0.5 * x - 3) и (y <= x*x*x) то
     вывод 'принадлежит'
   иначе
     вывод 'не принадлежит'
@@ -35,6 +35,8 @@ def toC (code)
   code.gsub!(/знач :=\s?(.*)/i, 'return \\1;')
   code.gsub!(/нач/i, 'void main() {')
   code.gsub!(/кон/i, '}')
+  code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "int \\1[\\3];")
+  code.gsub!(/^(.*)цел (.*)\s?=\s?(.*?)\n/im, " #define \\2 \\3\n\\1")
   code.gsub!(/^\s*цел (.*)\n/i, "int \\1;\n")
   code.gsub!(/цел ([a-z_]+[a-z0-9_]*)/i, "int \\1")
   code.gsub!(/^\s*вещ (.*)\n/i, "float \\1;\n")
@@ -57,6 +59,8 @@ def toBasic (code)
   code.gsub!(/\sили\s/, ' OR ')
   code.gsub!(/алг\s+([^\s]+)\s+([a-z_]+[a-z0-9_]*)\((.*)\)[\s\n]*нач(.*?)знач\s?:=(.*?)кон/im, "FUNCTION \\2 (\\3)\n \\4\n \\2 =\\5 END FUNCTION")
   code.gsub!(/(?:нач|кон)\n/i, '')
+  code.gsub!(/^\s*цел (.*)\s?=\s?(.*)/i, "CONST \\1 = \\2")
+  code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "DIM \\1(\\3) AS INTEGER")
   code.gsub!(/^\s*цел (.*)\n/i, "DIM \\1 AS INTEGER\n")
   code.gsub!(/цел ([a-z_]+[a-z0-9_]*)/i, "\\1")
   code.gsub!(/(.*):=(.*)\n/, "\\1=\\2\n")
@@ -77,6 +81,8 @@ def toPascal (code)
   code.gsub!(/(.*)алг\s+([^\s]+)\s+([a-z_]+[a-z0-9_]*)\((.*)\)[\s\n]*нач(.*?)знач\s?:=(.*?)кон/im, "Function \\3 (\\4): \\2\nbegin \\5\n \\3 := \\6end;\\1")
   code.gsub!(/нач/i, '')
   code.gsub!(/кон/i, 'end.')
+  code.gsub!(/^(.*)цел ([a-z]+[a-z0-9_]*)\s?=\s?(.*?)\n/im, "const\n \\2 = \\3;\n\\1")
+  code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "\\1 [\\2..\\3] of integer")
   code.gsub!(/^\s*цел (.*)\n/i, "var \\1: integer;\nbegin\n")
   code.gsub!(/цел ([a-z_]+[a-z0-9_]*)/i, "\\1: integer")
   code.gsub!(/:\s*цел\s*$/i, ": integer")
@@ -101,7 +107,11 @@ def toRuby (code)
   code.gsub!(/знач :=\s?/i, '')
   code.gsub!(/(?:нач|кон)\n/i, '')
   code.gsub!(/\s\=\s/, '==')
-  code.gsub!(/^\s*цел (.*)/i, "\\1 = 0")
+  code.gsub!(/^\s*цел ([a-z]+[a-z0-9_]*)\s?==\s?(.*?)\n/i, "\\1 = \\2\n")
+  code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "\\1 = []")
+  code.gsub!(/^\s*цел (.*)/i) { |vars|
+    $1.gsub(/([a-z]+[a-z0-9_]*),?/i, "\n\\1 = 0")
+  }
   code.gsub!(/цел ([a-z_]+[a-z0-9_]*)/i, "\\1")
   code.gsub!(/^\s*вещ (.*)/i, "\\1 = 0.0")
   code.gsub!(/вещ ([a-z_]+[a-z0-9_]*)/i, "\\1.to_f")
