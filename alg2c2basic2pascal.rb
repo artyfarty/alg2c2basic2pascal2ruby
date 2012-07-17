@@ -33,7 +33,7 @@ code.gsub!(/вывод (.+)/i) { |vars|
 
 def toC (code)
   divmod! code
-  code = "include <stdio.h>\n" + code
+  code = "#include <stdio.h>\n" + code
   code.gsub!(/иначе/i, "} else {")
   code.gsub!(/\sи\s/, ' && ')
   code.gsub!(/\sили\s/, ' || ')
@@ -42,7 +42,7 @@ def toC (code)
   code.gsub!(/нач/i, 'void main() {')
   code.gsub!(/кон/i, '}')
   code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "int \\1[\\3];")
-  code.gsub!(/^(.*)цел (.*)\s?=\s?(.*?)\n/im, " #define \\2 \\3\n\\1")
+  code.gsub!(/(.*?)цел ([a-z]+[a-z0-9_]*)\s?=\s?([0-9]+)/im, "#define \\2 \\3\n\\1")
   code.gsub!(/^\s*цел (.*)\n/i, "int \\1;\n")
   code.gsub!(/цел ([a-z_]+[a-z0-9_]*)/i, "int \\1")
   code.gsub!(/^\s*вещ (.*)\n/i, "float \\1;\n")
