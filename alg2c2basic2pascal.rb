@@ -3,13 +3,19 @@
 code = <<CODE
 алг
 нач
-  вещ x,y
-  ввод x,y
-  если y <= 0 и (y >= 0.5 * x - 3) и (y <= x*x*x) то
-    вывод 'принадлежит'
-  иначе
-    вывод 'не принадлежит'
-  все
+  цел N = 20
+  целтаб a[1:N]
+  цел i, j, M
+  нц для i от 1 до N
+    ввод a[i]
+  кц
+
+  нц для i от 1 до N
+    если mod(a[i], 8) = 0 и a[i] > m то
+      M = a[i]
+    все
+  end
+  puts m
 кон
 CODE
 
@@ -123,8 +129,8 @@ def toRuby (code)
   ifelse = /если (.*?) то(.*?)все/im
   while code =~ ifelse do code.gsub!(ifelse, "if \\1 then\\2 end") end
   
-  code.gsub!(/ввод ([a-z0-9,\s]+)$/i) { |vars|
-    $1.gsub( /([a-z0-9])+,?/i, "\\1 = rl_pick()\n" )
+  code.gsub!(/ввод ([a-z0-9,\s\[\]]+?)\n/i) { |vars|
+    $1.gsub(/([a-z0-9\[\]]+),?/i, "\\1 = rl_pick()\n" )
   }
   code.gsub!(/'/, '"')
   
@@ -138,7 +144,7 @@ end
 def divmod! (code, div='/', mod='%')
   #func_rx = /([a-z_]+[a-z_0-9]*)\s?\(([a-z0-9_\s]+),([a-z0-9_\s]+)\)/i
   
-  func_rx = /(div|mod)\s?\(([a-z0-9_\*\+\-\s\{\}\%\/]+),([a-z0-9_\*\+\-\s\{\}\%\/]+)\)/i
+  func_rx = /(div|mod)\s?\(([a-z0-9_\*\+\-\s\{\}\%\/\[\]]+),([a-z0-9_\*\+\-\s\{\}\%\/\[\]]+)\)/i
   escape_braces! code
   while code =~ func_rx
     code.gsub!(func_rx) { |match|
@@ -155,7 +161,7 @@ def divmod! (code, div='/', mod='%')
 end
 
 def escape_braces! (code)
-  braces = /\(([a-z0-9_\*\+\-\s\/\%\{\}]+)\)/i
+  braces = /\(([a-z0-9_\*\+\-\s\/\%\{\}\[\]]+)\)/i
   while code =~ braces
     code.gsub!(braces, "\{\\1\}")
   end
@@ -163,7 +169,7 @@ def escape_braces! (code)
 end
 
 def delete_lone_braces! (code)
-  lone_braces = /([^a-z_0-9\s]\s*)\(\s*(-?[a-z0-9_]*)\s*\)/i
+  lone_braces = /([^a-z_0-9\s]\s*)\(\s*(-?[a-z0-9_\[\]]*)\s*\)/i
   while code =~ lone_braces
     code.gsub!(lone_braces, "\\1\\2")
   end
