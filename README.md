@@ -1,6 +1,7 @@
 Парсер Школьно-алгоритмического
 =======================
 Дмитрий Гужов 2012, НИУ ВШЭ
+http://artyfarty.ru
 
 Данная утилита была разработана в помощь разработчикам пособий для подготовки к этим экзаменам.
 
@@ -23,3 +24,6 @@
 
 # Код
 Скрипт писался на коленке под очень узкую задачу, поэтому код пока что крайне прямолинеен. По мере доведения функционала до ума код будет структурирован лучше.
+
+# Лицензия
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/3.0/ or send a letter to Creative Commons, 444 Castro Street, Suite 900, Mountain View, California, 94041, USA.
