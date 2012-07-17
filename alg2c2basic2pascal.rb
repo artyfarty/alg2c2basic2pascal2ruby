@@ -9,19 +9,20 @@ code = <<CODE
   нц для i от 1 до N
     ввод a[i]
   кц
-
+  
+  M := 1000
   нц для i от 1 до N
-    если mod(a[i], 8) = 0 и a[i] > m то
-      M = a[i]
+    если mod(a[i], 3) = 0 и mod(a[i], 8) > 4 и a[i] < M то
+        M := a[i]
     все
-  end
-  puts m
+  кц
+  вывод M
 кон
 CODE
 
 # Симулятор ридлайна.
 # Укажите значения, которое будут переданы в readline
-@readline_vals = [-1,-2]
+@readline_vals = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 # код ниже не нужно редактировать
 
@@ -88,7 +89,7 @@ def toPascal (code)
   code.gsub!(/нач/i, '')
   code.gsub!(/кон/i, 'end.')
   code.gsub!(/^(.*)цел ([a-z]+[a-z0-9_]*)\s?=\s?(.*?)\n/im, "const\n \\2 = \\3;\n\\1")
-  code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "\\1 [\\2..\\3] of integer;")
+  code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "\\1: array [\\2..\\3] of integer;")
   code.gsub!(/^\s*цел (.*)\n/i, "var \\1: integer;\nbegin\n")
   code.gsub!(/цел ([a-z_]+[a-z0-9_]*)/i, "\\1: integer")
   code.gsub!(/:\s*цел\s*$/i, ": integer")
