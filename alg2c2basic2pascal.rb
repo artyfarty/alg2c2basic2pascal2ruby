@@ -1,26 +1,12 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 
-code = <<CODE
-алг
-нач
-  цел N = 20
-  целтаб a[1:N]
-  цел i, j, M
-  нц для i от 1 до N
-    ввод a[i]
-  кц
-  
-  M := 1000
-  нц для i от 1 до N
-    если mod(a[i], 3) = 0 и mod(a[i], 8) > 4 и a[i] < M то
-        M := a[i]
-    все
-  кц
-  вывод M
-кон
-CODE
+code = ARGF.read
+if code.empty?
+  code = IO.read 'sample_code.alg'
+end
 
-# Симулятор ридлайна.
+# Симулятор ридлайна, используется при неинтерактивной работе
 # Укажите значения, которое будут переданы в readline
 @readline_vals = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
@@ -112,7 +98,7 @@ def toRuby (code)
   code.gsub!(/\sили\s/, ' or ')
   code.gsub!(/(.*)алг\s+([^\s]+)\s+([a-z_]+[a-z0-9_]*)\((.*)\)[\s\n]*нач(.*?)кон/im, "def \\3(\\4)\n \\5 end\\1")
   code.gsub!(/знач :=\s?/i, '')
-  code.gsub!(/(?:нач|кон)\n/i, '')
+  code.gsub!(/^(?:нач|кон)$/i, '')
   code.gsub!(/\s\=\s/, '==')
   code.gsub!(/^\s*цел ([a-z]+[a-z0-9_]*)\s?==\s?(.*?)\n/i, "\\1 = \\2\n")
   code.gsub!(/целтаб ([a-z]+[a-z_0-9]*)\[(.*):(.*)\]/i, "\\1 = []")
@@ -179,8 +165,12 @@ end
 
 @readline_pos = 0
 def rl_pick
-@readline_pos+=1
-  @readline_vals[@readline_pos-1]
+  begin
+    STDIN.readline
+  rescue
+    @readline_pos+=1
+    @readline_vals[@readline_pos-1]
+  end
 end
 
 puts "="*10 + "АЛГ" + "="*10 + "\n"*2
